@@ -1,49 +1,50 @@
 //Задача № 1
 function cachingDecoratorNew(func) {
-    let cache = [];
+	let cache = [];
 
-    function wrapper(...args) {
-        const hash = md5(args);
-        let objectInCache = cache.find((item) => item.hash === hash);
-        if (objectInCache) {
-            return 'Из кэша: ' + objectInCache.value;
-        }
-        let result = func(...args);
-        let resultObj = {
-            hash: hash,
-            value: result
-        };
-        cache.push(resultObj);
+	function wrapper(...args) {
+		const hash = md5(args);
+		let objectInCache = cache.find((item) => item.hash === hash);
+		if (objectInCache) {
+			return 'Из кэша: ' + objectInCache.value;
+		}
+		let result = func(...args);
+		let resultObj = {
+			hash: hash,
+			value: result
+		};
+		cache.push(resultObj);
 
-        if(cache.length > 5) {
-            cache.shift();
-        }
-        return "Вычисляем: " + result;
-    }
-    return wrapper;
+		if (cache.length > 5) {
+			cache.shift();
+		}
+		return "Вычисляем: " + result;
+	}
+	return wrapper;
 }
 
 //Задача № 2
 function debounceDecoratorNew(func, delay) {
-    let timerId = null;
-    function resultFunction(...args) {
-        if(resultFunction.allCount === 0) {
-            func(...args);
-            resultFunction.count++;
-        }
+	let timerId = null;
 
-        resultFunction.allCount++;
+	function resultFunction(...args) {
+		if (resultFunction.allCount === 0) {
+			func(...args);
+			resultFunction.count++;
+		}
 
-        clearTimeout(timerId);
-        timerId = setTimeout(() => {
-            func(...args);
-            resultFunction.count++;
-        }, delay)
-    }
+		resultFunction.allCount++;
 
-    resultFunction.count = 0;
-    resultFunction.allCount = 0;
+		clearTimeout(timerId);
+		timerId = setTimeout(() => {
+			func(...args);
+			resultFunction.count++;
+		}, delay)
+	}
 
-    return resultFunction;
-  
+	resultFunction.count = 0;
+	resultFunction.allCount = 0;
+
+	return resultFunction;
+
 }
